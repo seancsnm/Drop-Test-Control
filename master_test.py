@@ -24,6 +24,8 @@ portName = port.device
 if (DEBUG): print ('Using port ') + port.description
 #print (port.device)
 
+print ("YOLO")
+
 #Initialize serial communication
 M1 = Module1(portName) #Aux Board
 M2 = Module2(portName) #Motor Control Board

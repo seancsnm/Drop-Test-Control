@@ -1,3 +1,19 @@
+""" 
+Sean Coss
+10-10-17
+NMT/LANL Drop Tower Control Library
+
+This code demonstrates the ability to control the drop tower circuitry using the minimalmodbus library and the control function wrappers that I wrote. The code refers to the .py files in the ./config folder for many of the configuration settings used. 
+
+The code first selects the USB-RS485 serial adapter from a list of user-specified possible devices. Then, it instantiates and initializes three modules corresponding to the three microcontroller on the control panel. Next, the code begins the main test loop, which checks the inputs and sets ouputs at each test step corresponding to what each test step should do. The loop works like a finite state machine where only one section of the loop is entered at each loop iteration corresponding to the state the device is currently in. 
+
+MinimalModbus: https://pypi.python.org/pypi/MinimalModbus/
+*Note that it is necessary to edit the minimalmodbus.py file as follows:
+minimalmodbus.py is installed in the site-packages folder under python if pip is used to install the packaage.
+Open the file, browse to the _calculate_minimum_silent_period() function, and replace the value returned with 0.025. This 
+waits longer between the time the arduino responds to a command and the time  the next command is sent. The code likely will not work correctly without this modification, and will have timeout errors. 
+"""
+
 from ctrlfunctions import *
 import time 
 
@@ -24,7 +40,6 @@ portName = port.device
 if (DEBUG): print ('Using port ') + port.description
 #print (port.device)
 
-print ("YOLO")
 
 #Initialize serial communication
 M1 = Module1(portName) #Aux Board
@@ -34,42 +49,15 @@ M3 = Module3(portName) #Sensor Board
 if (DEBUG): print ('All instruments initialized')
 
 
-
-start = time.clock()
-for i in range(10):
-  val1 = [format(x, '08b') for x in M1.ReadRegs(0x00, 3)]
-  #print ('val 1 = ' + str(val1))
-  #print strval1
-  val2 = [format(x, '08b') for x in M2.ReadRegs(0x00, 5)]
-  #print ('val2 = ' + str(val2))
-  val3 = [format(x, '08b') for x in M3.ReadRegs(0x00, 5)]
-  #print ('val3 = ' + str(val3))
-  #M2.SetMotorCurrentLim(D2.MOTOR_CURRENT_DEFAULT+i)
-  
-  
-  #print('starting read')
-  #print(M2.ReadReg(D2.CUR_CTRL))
-  #print('now write %d' %i)
-  #time.sleep(1)
-  #M2.WriteReg(D2.CUR_CTRL, i)
-  #time.sleep(1)
-  
-  #print M1.ReadReg(D1.CTRL)
-  #print('read')
-  #M1.WriteReg(D1.CTRL, 0b1000)
-  
- 
-  
-  
-  print str(val1) + '\t' + str(val2) + '\t' + str(val3)
-  #time.sleep(0.02)
-  #print ("%s\t%s\t%s", %
-  #print val2
-  #val3 = M3.ReadReg(D3.SENSORS)
-  #print('%s\t%s\t%s\t' %(format(val1, '016b'), format(val2, '016b'), format(val3, '016b')))
-stop = time.clock()
-
-print("dt = %f" %(stop-start))
+if (DEBUG):
+  start = time.clock()
+  for i in range(10):
+    val1 = [format(x, '08b') for x in M1.ReadRegs(0x00, 3)]
+    val2 = [format(x, '08b') for x in M2.ReadRegs(0x00, 5)]
+    val3 = [format(x, '08b') for x in M3.ReadRegs(0x00, 5)]
+    print str(val1) + '\t' + str(val2) + '\t' + str(val3)
+  stop = time.clock()
+  print("dt = %f" %(stop-start))
 
 
 
@@ -265,23 +253,4 @@ if __name__ == '__main__': #"main" function
       break
     #Begin state machine
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+   
